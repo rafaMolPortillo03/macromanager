@@ -1,4 +1,4 @@
-﻿import { getUserProfile, getTodayLog, calculateDailyTotals, deleteLogEntry, DailyLogEntry } from '../db/database';
+﻿import { getUserProfile, getTodayLog, calculateDailyTotals, deleteLogEntry, archiveToday, DailyLogEntry } from '../db/database';
 import { calculateProgress, formatNumber } from '../utils/macros';
 
 type NavigateFunction = (screen: string) => void;
@@ -49,7 +49,6 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
           <div class="header-greeting">${greeting}, ${profile.name || 'Usuario'}</div>
         </header>
 
-        <!-- Círculo de calorías principal -->
         <div class="card" style="text-align: center; margin-bottom: var(--space-lg);">
           <div class="progress-ring-container" style="margin: 0 auto;">
             <svg class="progress-ring" width="180" height="180">
@@ -82,7 +81,6 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
           </div>
         </div>
 
-        <!-- Grid de macros -->
         <div class="macro-grid">
           <div class="macro-card protein">
             <div class="name">🥩 Proteína</div>
@@ -112,7 +110,6 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
           </div>
         </div>
 
-        <!-- Lista de comidas de hoy -->
         <div class="food-list">
           <div class="food-list-header">
             <span class="food-list-title">🍽️ Hoy has comido</span>
@@ -128,9 +125,15 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
             </div>
           ` : todayLog.map(entry => renderFoodItem(entry)).join('')}
         </div>
+
+        ${todayLog.length > 0 ? `
+        <button id="finish-day-btn" class="btn btn-block btn-secondary" style="margin-top: 32px; border: 1px solid var(--color-text-muted); color: var(--color-text-muted);">
+           🏁 Terminar día y Resetear
+        </button>
+        ` : ''}
+
       </div>
 
-      <!-- Navegación -->
       <nav class="nav-bar">
         <div class="nav-bar-inner">
           <button class="nav-item active" data-screen="dashboard">
@@ -144,6 +147,10 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
           <button class="nav-item" data-screen="foods">
             <span class="icon">🍎</span>
             <span>Alimentos</span>
+          </button>
+           <button class="nav-item" data-screen="stats">
+            <span class="icon">📊</span>
+            <span>Progreso</span>
           </button>
           <button class="nav-item" data-screen="settings">
             <span class="icon">⚙️</span>
@@ -187,6 +194,14 @@ function attachEventListeners(navigate: NavigateFunction, container: HTMLElement
 
   const addBtn = document.getElementById('add-food-btn');
   addBtn?.addEventListener('click', () => navigate('add-food'));
+
+  const finishBtn = document.getElementById('finish-day-btn');
+  finishBtn?.addEventListener('click', () => {
+    if (confirm('¿Seguro que quieres terminar el día? Se guardarán los totales y se vaciará el registro de hoy.')) {
+      archiveToday();
+      renderDashboard(container, navigate);
+    }
+  });
 
   const navItems = document.querySelectorAll('.nav-item');
   navItems.forEach(item => {

@@ -5,6 +5,7 @@ import { renderDashboard } from './screens/dashboard';
 import { renderAddFoodScreen } from './screens/add-food';
 import { renderFoodsScreen } from './screens/foods';
 import { renderSettingsScreen } from './screens/settings';
+import { renderStatsScreen } from './screens/stats';
 
 const app = document.getElementById('app')!;
 
@@ -28,6 +29,9 @@ function renderCurrentScreen() {
       break;
     case 'foods':
       renderFoodsScreen(app, navigate);
+      break;
+    case 'stats':
+      renderStatsScreen(app, navigate);
       break;
     case 'settings':
       renderSettingsScreen(app, navigate);

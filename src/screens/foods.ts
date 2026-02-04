@@ -27,7 +27,6 @@ export function renderFoodsScreen(container: HTMLElement, navigate: NavigateFunc
               ${foods.length} alimentos guardados
             </p>
 
-            <!-- Buscador -->
             <div class="search-container">
               <span class="search-icon">🔍</span>
               <input 
@@ -56,10 +55,8 @@ export function renderFoodsScreen(container: HTMLElement, navigate: NavigateFunc
           <div style="height: 100px;"></div>
         </div>
 
-        <!-- FAB para añadir alimento personalizado -->
         <button class="btn btn-primary btn-fab" id="add-custom-btn">➕</button>
 
-        <!-- Navegación -->
         <nav class="nav-bar">
           <div class="nav-bar-inner">
             <button class="nav-item" data-screen="dashboard">
@@ -73,6 +70,10 @@ export function renderFoodsScreen(container: HTMLElement, navigate: NavigateFunc
             <button class="nav-item active" data-screen="foods">
               <span class="icon">🍎</span>
               <span>Alimentos</span>
+            </button>
+             <button class="nav-item" data-screen="stats">
+              <span class="icon">📊</span>
+              <span>Progreso</span>
             </button>
             <button class="nav-item" data-screen="settings">
               <span class="icon">⚙️</span>

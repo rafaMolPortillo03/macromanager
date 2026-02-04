@@ -365,3 +365,78 @@ export function calculateDailyTotals(entries: DailyLogEntry[]): DailyTotals {
         { calories: 0, protein: 0, carbs: 0, fat: 0 }
     );
 }
+
+export function archiveToday(): void {
+    const db = getDatabase();
+    const today = new Date().toISOString().split('T')[0];
+    const log = getTodayLog();
+
+    if (log.length === 0) return;
+
+    const totals = calculateDailyTotals(log);
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS daily_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT UNIQUE,
+            calories REAL,
+            protein REAL,
+            carbs REAL,
+            fat REAL,
+            meal_count INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
+    db.run(`
+        INSERT OR REPLACE INTO daily_history (date, calories, protein, carbs, fat, meal_count)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `, [today, totals.calories, totals.protein, totals.carbs, totals.fat, log.length]);
+
+    db.run('DELETE FROM daily_log WHERE date = ?', [today]);
+
+    saveToIndexedDB();
+}
+
+export interface HistoryEntry {
+    date: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    meal_count: number;
+}
+
+export function getHistory(limit: number): HistoryEntry[] {
+    const db = getDatabase();
+    // Ensure table exists just in case viewing stats before first archive
+    db.run(`
+        CREATE TABLE IF NOT EXISTS daily_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT UNIQUE,
+            calories REAL,
+            protein REAL,
+            carbs REAL,
+            fat REAL,
+            meal_count INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
+    const result = db.exec(`
+        SELECT * FROM daily_history 
+        ORDER BY date DESC 
+        LIMIT ${limit}
+    `);
+
+    if (result.length === 0) return [];
+
+    return result[0].values.map(row => {
+        const columns = result[0].columns;
+        const entry: Record<string, unknown> = {};
+        columns.forEach((col, i) => {
+            entry[col] = row[i];
+        });
+        return entry as unknown as HistoryEntry;
+    }).reverse(); // Return chronological order for charts
+}

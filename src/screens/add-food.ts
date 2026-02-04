@@ -129,6 +129,10 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
               <span class="icon">🍎</span>
               <span>Alimentos</span>
             </button>
+             <button class="nav-item" data-screen="stats">
+              <span class="icon">📊</span>
+              <span>Progreso</span>
+            </button>
             <button class="nav-item" data-screen="settings">
               <span class="icon">⚙️</span>
               <span>Ajustes</span>

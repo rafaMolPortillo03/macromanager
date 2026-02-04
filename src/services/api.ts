@@ -34,7 +34,7 @@ export async function searchRemoteFoods(query: string): Promise<Omit<Food, 'id' 
                 carbs: Number(p.nutriments?.['carbohydrates_100g'] || 0),
                 fat: Number(p.nutriments?.['fat_100g'] || 0)
             }))
-            .filter(f => f.name !== 'Desconocido'); // Filter out bad data
+            .filter(f => f.name !== 'Desconocido');
     } catch (error) {
         console.error('Error fetching foods:', error);
         return [];

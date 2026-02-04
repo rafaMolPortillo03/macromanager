@@ -25,7 +25,6 @@ export function renderSettingsScreen(container: HTMLElement, navigate: NavigateF
 
           ${isEditing ? renderEditForm() : renderProfile()}
 
-          <!-- Información -->
           <div class="card" style="margin-top: var(--space-lg);">
             <h3 style="margin-bottom: var(--space-md);">ℹ️ Acerca de</h3>
             <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
@@ -37,7 +36,6 @@ export function renderSettingsScreen(container: HTMLElement, navigate: NavigateF
             </p>
           </div>
 
-          <!-- Reiniciar -->
           <button class="btn btn-secondary btn-block" id="reset-btn" style="margin-top: var(--space-lg); color: var(--color-error);">
             🗑️ Reiniciar aplicación
           </button>
@@ -45,7 +43,6 @@ export function renderSettingsScreen(container: HTMLElement, navigate: NavigateF
           <div style="height: 100px;"></div>
         </div>
 
-        <!-- Navegación -->
         <nav class="nav-bar">
           <div class="nav-bar-inner">
             <button class="nav-item" data-screen="dashboard">
@@ -57,13 +54,17 @@ export function renderSettingsScreen(container: HTMLElement, navigate: NavigateF
               <span>Añadir</span>
             </button>
             <button class="nav-item" data-screen="foods">
-              <span class="icon">🍎</span>
-              <span>Alimentos</span>
-            </button>
-            <button class="nav-item active" data-screen="settings">
-              <span class="icon">⚙️</span>
-              <span>Ajustes</span>
-            </button>
+            <span class="icon">🍎</span>
+            <span>Alimentos</span>
+          </button>
+           <button class="nav-item" data-screen="stats">
+            <span class="icon">📊</span>
+            <span>Progreso</span>
+          </button>
+          <button class="nav-item active" data-screen="settings">
+            <span class="icon">⚙️</span>
+            <span>Ajustes</span>
+          </button>
           </div>
         </nav>
       </div>
@@ -74,7 +75,6 @@ export function renderSettingsScreen(container: HTMLElement, navigate: NavigateF
 
   function renderProfile(): string {
     return `
-      <!-- Perfil actual -->
       <div class="card">
         <div class="card-header">
           <h3>👤 Tu perfil</h3>
@@ -113,7 +113,6 @@ export function renderSettingsScreen(container: HTMLElement, navigate: NavigateF
         </div>
       </div>
 
-      <!-- Macros actuales -->
       <div class="card" style="margin-top: var(--space-lg);">
         <h3 style="margin-bottom: var(--space-md);">🎯 Tus objetivos diarios</h3>
         

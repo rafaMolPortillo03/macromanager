@@ -44,7 +44,7 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
   container.innerHTML = `
     <div class="screen">
       <div class="container">
-        <header class="header">
+        <header class="header" style="position: relative;">
           <div class="header-date">📅 ${formattedDate}</div>
           <div class="header-greeting">${greeting}, ${profile.name || 'Usuario'}</div>
         </header>
@@ -129,9 +129,6 @@ export function renderDashboard(container: HTMLElement, navigate: NavigateFuncti
           ` : todayLog.map(entry => renderFoodItem(entry)).join('')}
         </div>
       </div>
-
-      <!-- FAB para añadir comida -->
-      <button class="btn btn-primary btn-fab" id="add-food-btn">➕</button>
 
       <!-- Navegación -->
       <nav class="nav-bar">

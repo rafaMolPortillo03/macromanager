@@ -14,7 +14,6 @@ interface FoodFormData {
 }
 
 export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFunction): void {
-  // Form State
   let formData: FoodFormData = {
     name: '',
     calories: 0,
@@ -25,7 +24,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
     mealType: 'lunch'
   };
 
-  // Search Modal State
   let showSearchModal = false;
   let searchQuery = '';
   let searchResults: Food[] = [];
@@ -42,7 +40,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
               <h1 class="title" style="margin: 0;">Añadir comida</h1>
             </div>
 
-            <!-- Meal Type Selector -->
             <div class="meal-tabs" style="margin-bottom: var(--space-lg);">
               <button class="meal-tab ${formData.mealType === 'breakfast' ? 'active' : ''}" data-meal="breakfast">🌅 Desayuno</button>
               <button class="meal-tab ${formData.mealType === 'lunch' ? 'active' : ''}" data-meal="lunch">☀️ Almuerzo</button>
@@ -54,7 +51,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
           <div class="card">
             <h2 style="margin-bottom: var(--space-md);">📝 Datos del alimento</h2>
             
-            <!-- Name Input + Search Button -->
             <div class="input-group">
               <label class="label">Nombre del alimento</label>
               <div style="display: flex; gap: var(--space-sm);">
@@ -63,7 +59,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
               </div>
             </div>
 
-            <!-- Macros Grid -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                <div class="input-group">
                 <label class="label">Calorías (100g)</label>
@@ -84,7 +79,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
             </div>
           </div>
 
-          <!-- Quantity Selector -->
           <div class="card" style="margin-top: var(--space-md);">
              <label class="label" style="text-align: center; display: block;">Cantidad a registrar</label>
             <div class="quantity-picker">
@@ -100,7 +94,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
               </div>
               <button class="quantity-btn" id="increase-btn">➕</button>
             </div>
-             <!-- Shortcuts -->
             <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); flex-wrap: wrap; justify-content: center;">
               <button class="btn btn-secondary shortcut-btn" data-grams="100">100g</button>
               <button class="btn btn-secondary shortcut-btn" data-grams="200">200g</button>
@@ -108,7 +101,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
             </div>
           </div>
 
-          <!-- Total Summary -->
           <div class="card" style="margin-top: var(--space-md); background: var(--color-bg-alt);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>Total a registrar:</span>
@@ -123,7 +115,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
           </button>
         </div>
 
-        <!-- Navegación -->
         <nav class="nav-bar">
           <div class="nav-bar-inner">
             <button class="nav-item" data-screen="dashboard">
@@ -193,7 +184,7 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       `;
     }
 
-    // Local
+
     html += searchResults.map(food => `
       <div class="food-item local-food" data-index="${searchResults.indexOf(food)}">
          <div class="info">
@@ -204,7 +195,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       </div>
     `).join('');
 
-    // Remote
     if (remoteResults.length > 0) {
       html += `
         <div style="margin-top: var(--space-lg); margin-bottom: var(--space-md);">
@@ -232,7 +222,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
   }
 
   function attachEventListeners() {
-    // Navigation
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
       item.addEventListener('click', () => {
@@ -243,7 +232,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
     const backBtn = document.getElementById('back-btn');
     backBtn?.addEventListener('click', () => navigate('dashboard'));
 
-    // Form Interactions
     const mealTabs = document.querySelectorAll('.meal-tab');
     mealTabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -252,9 +240,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       });
     });
 
-    // Inputs (Two-way binding mainly for consistency if we re-render)
-    // Actually we only re-render on big state changes. For inputs we can just read value on save.
-    // But "Total Summary" depends on live updates.
     const inputs = ['form-name', 'form-calories', 'form-protein', 'form-carbs', 'form-fat', 'form-grams'];
     inputs.forEach(id => {
       const el = document.getElementById(id) as HTMLInputElement;
@@ -264,7 +249,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       });
     });
 
-    // Quantity Buttons
     const decreaseBtn = document.getElementById('decrease-btn');
     const increaseBtn = document.getElementById('increase-btn');
     decreaseBtn?.addEventListener('click', () => {
@@ -284,7 +268,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       });
     });
 
-    // Save
     document.getElementById('save-btn')?.addEventListener('click', () => {
       updateFormDataFromDOM();
       if (!formData.name) {
@@ -292,9 +275,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
         return;
       }
 
-      // Always save as a new custom food entry (or simplified logic: always addCustomFood)
-      // This effectively updates local DB with what the user "Corrected" in the form.
-      // It's the simplest way to allow "Edit before save".
       const newId = addCustomFood({
         name: formData.name,
         calories: formData.calories,
@@ -307,12 +287,10 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       navigate('dashboard');
     });
 
-    // Search Modal
     document.getElementById('open-search-btn')?.addEventListener('click', () => {
       showSearchModal = true;
-      updateFormDataFromDOM(); // Save current work
+      updateFormDataFromDOM();
       render();
-      // Focus search input after render
       setTimeout(() => document.getElementById('search-input')?.focus(), 50);
     });
 
@@ -331,16 +309,8 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
   }
 
   function updateTotalSummary() {
-    // Just re-render everything is safer/easier or we can target specific DOM element
-    // Given the complexity, let's just let the user see the summary on next render or live update if we want
-    // For now, let's do a lightweight DOM update for the summary text
     const totalKcal = Math.round((formData.calories || 0) * (formData.grams / 100));
     const summaryEl = document.querySelector('.card .card strong') as HTMLElement;
-    // The selector might be tricky, let's assume we can query by style or content if needed, 
-    // but simpler is to rely on re-render for shortcuts, and live math for inputs if we implemented it.
-    // Since I used re-render for shortcuts, the summary updates there.
-    // For typing in inputs, I called updateFormDataFromDOM but didn't call render(). 
-    // Let's manually update the text.
     if (summaryEl) {
       summaryEl.textContent = `${totalKcal} kcal`;
     }
@@ -361,12 +331,10 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
 
       clearTimeout(debounceTimer);
 
-      // Local Search
       searchResults = searchFoods(query);
       refreshSearchResultsDOM();
 
       if (query.length >= 3) {
-        // Remote Search
         debounceTimer = window.setTimeout(async () => {
           isSearchingRemote = true;
           refreshSearchResultsDOM();
@@ -384,7 +352,6 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
       }
     });
 
-    // We need a helper to just re-render the list without killing the input focus
     function refreshSearchResultsDOM() {
       const container = document.getElementById('results-container');
       if (container) container.innerHTML = renderSearchResults();
@@ -420,6 +387,5 @@ export function renderAddFoodScreen(container: HTMLElement, navigate: NavigateFu
     render();
   }
 
-  // Initial call
   render();
 }
